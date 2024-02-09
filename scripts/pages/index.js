@@ -1,32 +1,25 @@
     async function getPhotographers() {
-        // Ceci est un exemple de données pour avoir un affichage de photographes de test dès le démarrage du projet, 
-        // mais il sera à remplacer avec une requête sur le fichier JSON en utilisant "fetch".
-        let photographers = [
-            {
-                "name": "Ma data test",
-                "id": 1,
-                "city": "Paris",
-                "country": "France",
-                "tagline": "Ceci est ma data test",
-                "price": 400,
-                "portrait": "account.png"
-            },
-            {
-                "name": "Autre data test",
-                "id": 2,
-                "city": "Londres",
-                "country": "UK",
-                "tagline": "Ceci est ma data test 2",
-                "price": 500,
-                "portrait": "account.png"
-            },
-        ]
-        // et bien retourner le tableau photographers seulement une fois récupéré
-        return ({
-            photographers: [...photographers, ...photographers, ...photographers]})
+        try {
+            // Charge les données depuis le fichier JSON
+            const response = await fetch('../data/photographers.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            // Extrait les données JSON de la réponse
+            const data = await response.json();
+            // Retourne les données des photographes
+            return data.photographers;
+        } catch (e) {
+            console.error("There was a problem fetching the photographers data:", e);
+        }
     }
 
     async function displayData(photographers) {
+        if (!photographers) {
+            console.error("No photographers data to display.");
+            return;
+        }
+
         const photographersSection = document.querySelector(".photographer_section");
 
         photographers.forEach((photographer) => {
@@ -38,7 +31,7 @@
 
     async function init() {
         // Récupère les datas des photographes
-        const { photographers } = await getPhotographers();
+        const photographers = await getPhotographers();
         displayData(photographers);
     }
     
