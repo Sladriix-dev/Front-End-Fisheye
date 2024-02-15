@@ -13,26 +13,54 @@ function getPhotographerIdFromUrl() {
   return urlParams.get("id");
 }
 
-// Factory pour générer les éléments DOM pour les médias
-function mediaFactory(media) {
+function mediaFactory(media, photographerId) {
   function getMediaDOM() {
     const mediaContainer = document.createElement("div");
     mediaContainer.classList.add("media-item");
 
-    // Ici, tu devras déterminer si c'est une image ou une vidéo
-    // et créer l'élément HTML approprié
+    const imageContainer = document.createElement("div");
+    imageContainer.classList.add("image-container");
+
+    // Construire le chemin en utilisant l'ID du photographe
+    const mediaPath = `assets/photographers/${photographerId}/`;
+
+    let mediaElement;
+    if (media.image) {
+      mediaElement = document.createElement("img");
+      mediaElement.src = mediaPath + media.image;
+      mediaElement.alt = media.title;
+    } else if (media.video) {
+      mediaElement = document.createElement("video");
+      mediaElement.src = mediaPath + media.video;
+      // Ajouter des attributs supplémentaires si nécessaire
+    }
+    imageContainer.appendChild(mediaElement);
 
     // Titre du média
     const title = document.createElement("h3");
     title.textContent = media.title;
+    title.classList.add("media-title");
 
     // Nombre de likes
     const likes = document.createElement("p");
-    likes.textContent = `${media.likes} ♥`;
+    likes.textContent = media.likes;
+    likes.classList.add("media-likes");
 
-    // Ajout au DOM
-    mediaContainer.appendChild(title);
-    mediaContainer.appendChild(likes);
+    // Conteneur pour le titre et les likes
+    const textContainer = document.createElement("div");
+    textContainer.classList.add("text-container");
+    textContainer.appendChild(title);
+    textContainer.appendChild(likes);
+
+    // Coeur à côté des likes
+    const heart = document.createElement("span");
+    heart.innerHTML = "♥";
+    heart.classList.add("heart-icon");
+    textContainer.appendChild(heart);
+
+    // Ajouter l'image et le texte au conteneur principal
+    mediaContainer.appendChild(imageContainer);
+    mediaContainer.appendChild(textContainer);
 
     return mediaContainer;
   }
@@ -71,12 +99,23 @@ function displayPhotographer(photographer) {
   imageContainer.appendChild(photographerImage);
 }
 
-function displayMedia(photographerMedia) {
-  const gallery = document.querySelector(".gallery");
-  gallery.innerHTML = "";
-  photographerMedia.forEach((mediaItem) => {
-    gallery.appendChild(mediaFactory(mediaItem).getMediaDOM());
-  });
+async function displayMedia(photographerId) {
+  try {
+    const data = await fetchData("../data/photographers.json");
+    const photographerMedia = data.media.filter(
+      (item) => item.photographerId === parseInt(photographerId)
+    );
+
+    const gallery = document.querySelector(".gallery-images");
+    gallery.innerHTML = "";
+
+    photographerMedia.forEach((mediaItem) => {
+      const mediaElem = mediaFactory(mediaItem, photographerId).getMediaDOM();
+      gallery.appendChild(mediaElem);
+    });
+  } catch (error) {
+    console.error("Could not fetch media:", error);
+  }
 }
 
 // Fonctions pour la logique de tri des médias
@@ -100,42 +139,49 @@ async function displaySortedMedia(photographerId, criterion) {
   displayMedia(sortMedia(media, criterion), photographerId);
 }
 
+// Fonctions pour la mise à jour des éléments de l'interface utilisateur
 async function updateBandeau(photographerId, photographerData, mediaData) {
-    // S'assure que les données nécessaires sont présentes
-    if (!photographerData || !mediaData) {
-        console.error("Missing data for updating the bandeau");
-        return;
-    }
+  // S'assure que les données nécessaires sont présentes
+  if (!photographerData || !mediaData) {
+    console.error("Missing data for updating the bandeau");
+    return;
+  }
 
-    // Calcule le total des likes pour les médias du photographe spécifique
-    const totalLikes = mediaData
-        .filter(item => item.photographerId === photographerData.id)
-        .reduce((acc, item) => acc + item.likes, 0);
+  // Calcule le total des likes pour les médias du photographe spécifique
+  const totalLikes = mediaData
+    .filter((item) => item.photographerId === photographerData.id)
+    .reduce((acc, item) => acc + item.likes, 0);
 
-    // Met à jour le HTML avec les totaux
-    document.getElementById("total-likes").textContent = totalLikes.toLocaleString("fr-FR");
-    document.getElementById("daily-price").textContent = `${photographerData.price}€ / jour`;
+  // Met à jour le HTML avec les totaux
+  document.getElementById("total-likes").textContent =
+    totalLikes.toLocaleString("fr-FR");
+  document.getElementById(
+    "daily-price"
+  ).textContent = `${photographerData.price}€ / jour`;
 }
 
-// Initialise la page
 async function init() {
-    const photographerId = getPhotographerIdFromUrl();
+  try {
+    const photographerId = getPhotographerIdFromUrl(); // Récupère l'ID du photographe à partir de l'URL
     if (!photographerId) {
-        console.error("Photographer ID is not defined in the URL");
-        return;
+      throw new Error("Photographer ID is not defined in the URL");
     }
 
-    try {
-        const data = await fetchData("../data/photographers.json");
-        const photographerData = data.photographers.find(p => p.id.toString() === photographerId);
-        const mediaData = data.media.filter(m => m.photographerId.toString() === photographerId);
+    const data = await fetchData("../data/photographers.json");
+    const photographerData = data.photographers.find(
+      (p) => p.id.toString() === photographerId
+    );
 
-        displayPhotographer(photographerData);
-        displayMedia(mediaData);
-        await updateBandeau(photographerId, photographerData, mediaData); // Pass both photographer and media data to updateBandeau
-    } catch (error) {
-        console.error(error);
+    if (!photographerData) {
+      throw new Error("Photographer data not found");
     }
+
+    displayPhotographer(photographerData);
+    await displayMedia(photographerId); // On passe l'ID du photographe à `displayMedia`
+    await updateBandeau(photographerId, photographerData, data.media); // On passe l'ID du photographe à `updateBandeau` ainsi que les données nécessaires
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // Événements
