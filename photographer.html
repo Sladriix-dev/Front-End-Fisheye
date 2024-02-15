@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
   <head>
     <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/photographer.css" rel="stylesheet" type="text/css">
     <meta charset="utf-8">
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
@@ -12,15 +13,33 @@
       <a href="./index.html"><img src="assets/images/logo.png" class="logo" alt="fisheye logo"/></a>
     </header>
     <main id="main">
-      <div class="photograph-header">
+      <section class="photograph-header">
+        <div class="infos"></div>
         <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
+        <div class="photographer-image"></div>
+      </section>
+
+      <div class="sort-options">
+        <p>Trier par</p>
+        <select id="sort-select">
+          <option value="popularity">Popularité</option>
+          <option value="date">Date</option>
+          <option value="title">Titre</option>
+        </select>
       </div>
+
+      <div class="gallery"></div>
+
+      <section id="info-bandeau">
+        <span id="total-likes">0</span>♥
+        <span id="daily-price">0€/jour</span>
+      </section>
     </main>
     <div id="contact_modal">
 			<div class="modal">
 				<header>
           <h2>Contactez-moi</h2>
-          <img src="assets/icons/close.svg" onclick="closeModal()" />
+          <img src="assets/icons/close.svg" alt="close modal" onclick="closeModal()" />
         </header>
 				<form>
 					<div>
