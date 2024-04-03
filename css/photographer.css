@@ -80,9 +80,8 @@
 .image-container img,
 .image-container video {
     width: 100%;
-    /* L'image ou la vidéo remplit le conteneur */
-    height: auto;
-    /* Hauteur ajustée automatiquement pour conserver l'aspect ratio */
+    height: 30vh;
+    object-fit: cover;
 }
 
 .text-container {
@@ -91,11 +90,10 @@
     align-items: center;
 }
 
-.heart-icon {
-    margin-left: 5px;
-    /* Espace entre les likes et le coeur */
-    color: red;
-    /* Couleur du coeur */
+.likes-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 #info-bandeau {
