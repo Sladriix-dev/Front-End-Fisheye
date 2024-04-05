@@ -36,6 +36,15 @@ function mediaFactory(media, photographerId) {
     }
     imageContainer.appendChild(mediaElement);
 
+    mediaElement.addEventListener("click", () => {
+      const isVideo = !!media.video; // Détermine si c'est une vidéo
+      const mediaUrl = isVideo ? media.video : media.image; // Récupère l'URL de l'image ou de la vidéo
+      openLightbox(
+        `assets/photographers/${photographerId}/${mediaUrl}`,
+        isVideo
+      );
+    });
+
     // Titre du média
     const title = document.createElement("h3");
     title.textContent = media.title;
@@ -72,7 +81,6 @@ function mediaFactory(media, photographerId) {
 
   return { getMediaDOM };
 }
-
 
 // Fonctions pour l'affichage des données sur la page
 function displayPhotographer(photographer) {
@@ -123,16 +131,26 @@ async function displayMedia(mediaOrPhotographerId) {
       );
     }
 
+    // Remplir mediaArray avec les médias du photographe
+    mediaArray = photographerMedia.map((media) => ({
+      ...media,
+      url: `assets/photographers/${mediaOrPhotographerId}/${
+        media.image || media.video
+      }`,
+    }));
+
     photographerMedia.forEach((mediaItem) => {
-      const mediaElem = mediaFactory(mediaItem, mediaOrPhotographerId).getMediaDOM(); // Vous n'avez pas besoin de passer photographerId ici
+      const mediaElem = mediaFactory(
+        mediaItem,
+        mediaOrPhotographerId
+      ).getMediaDOM(); // Vous n'avez pas besoin de passer photographerId ici
       gallery.appendChild(mediaElem);
     });
   } catch (error) {
     console.error("Could not fetch or display media:", error);
   }
-  console.log(mediaOrPhotographerId)
+  console.log(mediaArray);
 }
-
 
 function sortMedia(media, criterion) {
   console.log(`Sorting media by ${criterion}`);
@@ -155,7 +173,7 @@ async function displaySortedMedia(photographerId, criterion) {
       (item) => item.photographerId === parseInt(photographerId)
     );
     const sortedMedia = sortMedia(photographerMedia, criterion);
-    
+
     // Nettoyer la galerie avant de réafficher
     const gallery = document.querySelector(".gallery-images");
     gallery.innerHTML = "";
@@ -170,12 +188,13 @@ async function displaySortedMedia(photographerId, criterion) {
   }
 }
 
-document.getElementById("sort-select").addEventListener("change", async (event) => {
-  const photographerId = getPhotographerIdFromUrl();
-  console.log(`Selected sort option: ${event.target.value}`);
-  await displaySortedMedia(photographerId, event.target.value);
-});
-
+document
+  .getElementById("sort-select")
+  .addEventListener("change", async (event) => {
+    const photographerId = getPhotographerIdFromUrl();
+    console.log(`Selected sort option: ${event.target.value}`);
+    await displaySortedMedia(photographerId, event.target.value);
+  });
 
 // Fonctions pour la mise à jour des éléments de l'interface utilisateur
 async function updateBandeau(photographerId, photographerData, mediaData) {
@@ -197,6 +216,72 @@ async function updateBandeau(photographerId, photographerData, mediaData) {
     "daily-price"
   ).textContent = `${photographerData.price}€ / jour`;
 }
+
+let currentMediaIndex = 0;
+let mediaArray = [];
+
+function openLightbox(mediaUrl, isVideo) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxContent = document.getElementById('lightbox-content');
+
+  lightboxContent.innerHTML = isVideo
+    ? `<video src="${mediaUrl}" controls></video>`
+    : `<img src="${mediaUrl}" alt="Displayed Media">`;
+
+  lightbox.hidden = false; // Afficher la lightbox
+  lightbox.style.display = 'flex'; // Utiliser flex pour centrer le contenu
+
+  // Ajouter l'animation ici si nécessaire
+  lightbox.classList.add('lightbox-open-animation');
+}
+
+
+function showNextMedia() {
+  if (currentMediaIndex < mediaArray.length - 1) {
+    currentMediaIndex++;
+  } else {
+    currentMediaIndex = 0; // Revenir au début si on est à la fin
+  }
+  const currentMedia = mediaArray[currentMediaIndex];
+  openLightbox(currentMedia.url, 'video' in currentMedia);
+}
+
+function showPrevMedia() {
+  if (currentMediaIndex > 0) {
+    currentMediaIndex--;
+  } else {
+    currentMediaIndex = mediaArray.length - 1; // Aller à la dernière image si on est au début
+  }
+  const currentMedia = mediaArray[currentMediaIndex];
+  openLightbox(currentMedia.url, 'video' in currentMedia);
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  lightbox.hidden = true; // Masque la lightbox
+  lightbox.style.display = "none"; // Arrête d'afficher la lightbox
+}
+
+document
+  .getElementById("lightbox-close")
+  .addEventListener("click", closeLightbox);
+document
+  .getElementById("lightbox-next")
+  .addEventListener("click", showNextMedia);
+document
+  .getElementById("lightbox-prev")
+  .addEventListener("click", showPrevMedia);
+
+// Pour la navigation au clavier, ajoutez un event listener au document pour écouter les touches du clavier.
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeLightbox();
+  } else if (event.key === "ArrowRight") {
+    showNextMedia();
+  } else if (event.key === "ArrowLeft") {
+    showPrevMedia();
+  }
+});
 
 // Initialisation de la page
 async function init() {
