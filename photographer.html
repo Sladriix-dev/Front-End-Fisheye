@@ -32,11 +32,14 @@
       </section>
 
       <div id="lightbox" class="lightbox" aria-label="image closeup view" role="dialog" hidden>
-        <div id="lightbox-close" class="lightbox-close" aria-label="Close dialog">X</div>
-        <div id="lightbox-prev" class="lightbox-nav lightbox-prev" aria-label="Previous image">&lt;</div>
-        <div id="lightbox-content" class="lightbox-content"></div>
-        <div id="lightbox-next" class="lightbox-nav lightbox-next" aria-label="Next image">&gt;</div>
+        <div id="lightbox-content" class="lightbox-content">
+          <div id="lightbox-media" class="lightbox-media"></div>
+          <div id="lightbox-close" class="lightbox-control" aria-label="Close dialog">X</div>
+          <div id="lightbox-prev" class="lightbox-control lightbox-nav" aria-label="Previous image">&lt;</div>
+          <div id="lightbox-next" class="lightbox-control lightbox-nav" aria-label="Next image">&gt;</div>
+        </div>
       </div>
+      
             
       <section id="info-bandeau">
         <span id="total-likes">0</span>♥
@@ -53,6 +56,12 @@
 					<div>
 						<label>Prénom</label>
 						<input />
+            <label>Nom</label>
+						<input />
+            <label>Email</label>
+						<input />
+            <label>Votre message</label>
+            <textarea cols="91" rows="10"></textarea>
 					</div>
           <button class="contact_button">Envoyer</button>
 				</form>

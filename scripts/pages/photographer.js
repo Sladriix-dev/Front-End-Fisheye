@@ -222,7 +222,7 @@ let mediaArray = [];
 
 function openLightbox(mediaUrl, isVideo) {
   const lightbox = document.getElementById('lightbox');
-  const lightboxContent = document.getElementById('lightbox-content');
+  const lightboxContent = document.getElementById('lightbox-media');
 
   lightboxContent.innerHTML = isVideo
     ? `<video src="${mediaUrl}" controls></video>`
@@ -230,9 +230,6 @@ function openLightbox(mediaUrl, isVideo) {
 
   lightbox.hidden = false; // Afficher la lightbox
   lightbox.style.display = 'flex'; // Utiliser flex pour centrer le contenu
-
-  // Ajouter l'animation ici si nécessaire
-  lightbox.classList.add('lightbox-open-animation');
 }
 
 
