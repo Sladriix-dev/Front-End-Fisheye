@@ -1,74 +1,78 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <link href="css/style.css" rel="stylesheet" type="text/css" />
-    <link href="css/photographer.css" rel="stylesheet" type="text/css">
-    <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-    <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
-    <title>Fisheye - photographe </title>
-  </head>
-  <body>
-    <header>
-      <a href="./index.html"><img src="assets/images/logo.png" class="logo" alt="fisheye logo"/></a>
-    </header>
-    <main id="main">
-      <section class="photograph-header">
-        <div class="infos"></div>
-        <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
-        <div class="photographer-image"></div>
-      </section>
 
-      <section class="gallery">
-        <div class="sort-options">
-          <p>Trier par</p>
-          <select id="sort-select">
-            <option value="popularity">Popularité</option>
-            <option value="date">Date</option>
-            <option value="title">Titre</option>
-          </select>
-        </div>
-        <div class="gallery-images"></div>
-      </section>
+<head>
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+  <link href="css/photographer.css" rel="stylesheet" type="text/css">
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link href="https://fonts.googleapis.com/css?family=DM+Sans&display=swap" rel="stylesheet">
+  <title>Fisheye - photographe </title>
+</head>
 
-      <div id="lightbox" class="lightbox" aria-label="image closeup view" role="dialog" hidden>
-        <div id="lightbox-content" class="lightbox-content">
-          <div id="lightbox-media" class="lightbox-media"></div>
-          <p id="lightbox-title" class="lightbox-title"></p>
-          <div id="lightbox-close" class="lightbox-control" aria-label="Close dialog">X</div>
-          <div id="lightbox-prev" class="lightbox-control lightbox-nav" aria-label="Previous image">&lt;</div>
-          <div id="lightbox-next" class="lightbox-control lightbox-nav" aria-label="Next image">&gt;</div>
-        </div>
+<body>
+  <header>
+    <a href="./index.html"><img src="assets/images/logo.png" class="logo" alt="fisheye logo" /></a>
+  </header>
+  <main id="main">
+    <section class="photograph-header">
+      <div class="infos"></div>
+      <button class="contact_button" onclick="displayModal()">Contactez-moi</button>
+      <div class="photographer-image"></div>
+    </section>
+
+    <section class="gallery">
+      <div class="sort-options">
+        <p>Trier par</p>
+        <select id="sort-select">
+          <option value="popularity">Popularité</option>
+          <option value="date">Date</option>
+          <option value="title">Titre</option>
+        </select>
       </div>
-      
-            
-      <section id="info-bandeau">
-        <span id="total-likes">0</span>♥
-        <span id="daily-price">0€/jour</span>
-      </section>
-    </main>
-    <div id="contact_modal">
-			<div class="modal">
-				<header>
-          <h2>Contactez-moi</h2>
-          <img src="assets/icons/close.svg" alt="close modal" onclick="closeModal()" />
-        </header>
-				<form>
-					<div>
-						<label>Prénom</label>
-						<input />
-            <label>Nom</label>
-						<input />
-            <label>Email</label>
-						<input />
-            <label>Votre message</label>
-            <textarea cols="91" rows="10"></textarea>
-					</div>
-          <button class="contact_button">Envoyer</button>
-				</form>
-			</div>
-		</div>
-    <script src="/scripts/pages/photographer.js"></script>
-    <script src="/scripts/utils/contactForm.js"></script>
-  </body>
+      <div class="gallery-images"></div>
+    </section>
+
+    <div id="lightbox" class="lightbox" aria-label="image closeup view" role="dialog" hidden>
+      <div id="lightbox-content" class="lightbox-content">
+        <div id="lightbox-media" class="lightbox-media"></div>
+        <p id="lightbox-title" class="lightbox-title"></p>
+        <div id="lightbox-close" class="lightbox-control" aria-label="Close dialog">X</div>
+        <div id="lightbox-prev" class="lightbox-control lightbox-nav" aria-label="Previous image">&lt;</div>
+        <div id="lightbox-next" class="lightbox-control lightbox-nav" aria-label="Next image">&gt;</div>
+      </div>
+    </div>
+
+
+    <section id="info-bandeau">
+      <span id="total-likes">0</span>♥
+      <span id="daily-price">0€/jour</span>
+    </section>
+  </main>
+  <div id="contact_modal">
+    <div class="modal">
+      <header>
+        <h2>Contactez-moi</h2>
+        <img src="assets/icons/close.svg" alt="close modal" onclick="closeModal()" />
+      </header>
+      <form>
+        <div>
+          <label>Prénom</label>
+          <input name="prenom" />
+          <label>Nom</label>
+          <input name="nom" />
+          <label>Email</label>
+          <input name="email" />
+          <label>Votre message</label>
+          <textarea name="message"></textarea>
+        </div>
+        <button class="contact_button" type="submit">Envoyer</button>
+      </form>
+
+    </div>
+  </div>
+  <script src="/scripts/pages/photographer.js"></script>
+  <script src="/scripts/utils/contactForm.js"></script>
+</body>
+
 </html>
