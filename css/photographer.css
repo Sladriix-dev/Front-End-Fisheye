@@ -120,11 +120,12 @@
     justify-content: center;
     background: #fff;
     border: 1px solid #ccc;
-    margin: auto;
-    max-width: 80vw;
-    max-height: 80vh;
+    margin: 0;
+    max-width: 90vw;
+    max-height: 90vh;
     overflow: hidden;
-    padding: 20px; /* Cela crée de l'espace autour de l'intérieur de la lightbox-content */
+    padding: 20px;
+    /* Cela crée de l'espace autour de l'intérieur de la lightbox-content */
     box-sizing: border-box;
 }
 
@@ -134,7 +135,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: calc(100% - 40px); /* Soustrait le double du padding horizontal */
+    max-width: calc(100% - 40px);
+    /* Soustrait le double du padding horizontal */
     max-height: calc(100% - 40px);
 }
 
@@ -172,6 +174,14 @@
     transform: translate(50%, -50%);
     font-size: 6vh;
     padding-right: 15px;
+}
+
+.lightbox-title {
+    color: #333;
+    font-size: 20px;
+    margin: 0;
+    padding: 20px 0 0 40px;
+    width: 100%;
 }
 
 

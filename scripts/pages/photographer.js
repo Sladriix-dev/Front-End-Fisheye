@@ -39,9 +39,11 @@ function mediaFactory(media, photographerId) {
     mediaElement.addEventListener("click", () => {
       const isVideo = !!media.video; // Détermine si c'est une vidéo
       const mediaUrl = isVideo ? media.video : media.image; // Récupère l'URL de l'image ou de la vidéo
+      const title = media.title;
       openLightbox(
         `assets/photographers/${photographerId}/${mediaUrl}`,
-        isVideo
+        isVideo,
+        title
       );
     });
 
@@ -220,13 +222,16 @@ async function updateBandeau(photographerId, photographerData, mediaData) {
 let currentMediaIndex = 0;
 let mediaArray = [];
 
-function openLightbox(mediaUrl, isVideo) {
+function openLightbox(mediaUrl, isVideo, title) {
   const lightbox = document.getElementById('lightbox');
   const lightboxContent = document.getElementById('lightbox-media');
+  const lightboxTitle = document.getElementById('lightbox-title');
 
   lightboxContent.innerHTML = isVideo
     ? `<video src="${mediaUrl}" controls></video>`
     : `<img src="${mediaUrl}" alt="Displayed Media">`;
+
+  lightboxTitle.textContent = title;
 
   lightbox.hidden = false; // Afficher la lightbox
   lightbox.style.display = 'flex'; // Utiliser flex pour centrer le contenu
@@ -240,7 +245,7 @@ function showNextMedia() {
     currentMediaIndex = 0; // Revenir au début si on est à la fin
   }
   const currentMedia = mediaArray[currentMediaIndex];
-  openLightbox(currentMedia.url, 'video' in currentMedia);
+  openLightbox(currentMedia.url, 'video' in currentMedia, currentMedia.title);
 }
 
 function showPrevMedia() {
@@ -250,7 +255,7 @@ function showPrevMedia() {
     currentMediaIndex = mediaArray.length - 1; // Aller à la dernière image si on est au début
   }
   const currentMedia = mediaArray[currentMediaIndex];
-  openLightbox(currentMedia.url, 'video' in currentMedia);
+  openLightbox(currentMedia.url, 'video' in currentMedia, currentMedia.title);
 }
 
 function closeLightbox() {
