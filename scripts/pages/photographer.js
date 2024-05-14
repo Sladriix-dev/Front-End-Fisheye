@@ -7,7 +7,7 @@ async function fetchData(url) {
   return await response.json();
 }
 
-function getPhotographerIdFromUrl() {
+export default function getPhotographerIdFromUrl() {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   return urlParams.get("id");
@@ -126,7 +126,6 @@ async function displayMedia(mediaOrPhotographerId) {
       photographerMedia = mediaOrPhotographerId;
     } else {
       // Sinon, récupérez et filtrez les médias en fonction de l'ID du photographe
-      const photographerId = mediaOrPhotographerId;
       const data = await fetchData("../data/photographers.json");
       photographerMedia = data.media.filter(
         (item) => item.photographerId === parseInt(mediaOrPhotographerId)
@@ -136,16 +135,11 @@ async function displayMedia(mediaOrPhotographerId) {
     // Remplir mediaArray avec les médias du photographe
     mediaArray = photographerMedia.map((media) => ({
       ...media,
-      url: `assets/photographers/${mediaOrPhotographerId}/${
-        media.image || media.video
-      }`,
+      url: `assets/photographers/${mediaOrPhotographerId}/${media.image || media.video}`,
     }));
 
     photographerMedia.forEach((mediaItem) => {
-      const mediaElem = mediaFactory(
-        mediaItem,
-        mediaOrPhotographerId
-      ).getMediaDOM(); // Vous n'avez pas besoin de passer photographerId ici
+      const mediaElem = mediaFactory(mediaItem, mediaOrPhotographerId).getMediaDOM();
       gallery.appendChild(mediaElem);
     });
   } catch (error) {
@@ -203,6 +197,12 @@ async function updateBandeau(photographerId, photographerData, mediaData) {
   // S'assure que les données nécessaires sont présentes
   if (!photographerData || !mediaData) {
     console.error("Missing data for updating the bandeau");
+    return;
+  }
+
+  // Vérifiez que l'ID du photographe correspond bien à celui attendu (utile si des contrôles supplémentaires sont nécessaires)
+  if (photographerData.id.toString() !== photographerId.toString()) {
+    console.error("Photographer ID does not match the data provided");
     return;
   }
 

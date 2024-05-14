@@ -1,4 +1,4 @@
-function photographerTemplate(data) {
+export default function photographerTemplate(data) {
     const { name, city, country, tagline, price, portrait, id } = data;
 
     // Exemple d'URL - à adapter selon la structure réelle de ton site
