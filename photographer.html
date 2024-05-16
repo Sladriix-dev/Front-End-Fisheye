@@ -73,6 +73,12 @@
   </div>
   <script type="module" src="/scripts/pages/photographer.js"></script>
   <script type="module" src="/scripts/utils/contactForm.js"></script>
+  <script type="module">
+    import { displayModal, closeModal } from '/scripts/utils/contactForm.js';
+    window.displayModal = displayModal;
+    window.closeModal = closeModal;
+  </script>
+
 </body>
 
 </html>
