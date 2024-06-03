@@ -20,6 +20,7 @@ function mediaFactory(media, photographerId) {
 
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("image-container");
+    imageContainer.tabIndex = 0; // Rendre cliquable avec "Enter"
 
     // Construire le chemin en utilisant l'ID du photographe
     const mediaPath = `assets/photographers/${photographerId}/`;
@@ -36,7 +37,7 @@ function mediaFactory(media, photographerId) {
     }
     imageContainer.appendChild(mediaElement);
 
-    mediaElement.addEventListener("click", () => {
+    imageContainer.addEventListener("click", () => {
       const isVideo = !!media.video; // Détermine si c'est une vidéo
       const mediaUrl = isVideo ? media.video : media.image; // Récupère l'URL de l'image ou de la vidéo
       const title = media.title;
@@ -45,6 +46,12 @@ function mediaFactory(media, photographerId) {
         isVideo,
         title
       );
+    });
+
+    imageContainer.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        imageContainer.click();
+      }
     });
 
     // Titre du média
@@ -66,6 +73,7 @@ function mediaFactory(media, photographerId) {
     const heartButton = document.createElement("button");
     heartButton.classList.add("heart-button");
     heartButton.appendChild(heart);
+    heartButton.tabIndex = 0;
 
     // Conteneur pour les likes et le cœur
     const likesContainer = document.createElement("div");
@@ -94,10 +102,24 @@ function mediaFactory(media, photographerId) {
       }
     });
 
+    heartButton.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        heartButton.click();
+      }
+    });
+
     return mediaContainer;
   }
 
   return { getMediaDOM };
+}
+
+function updateTotalLikes(increment) {
+  const totalLikesElement = document.getElementById("total-likes");
+  const currentTotalLikes = parseInt(
+    totalLikesElement.textContent.replace(/\D/g, "")
+  );
+  totalLikesElement.textContent = `${currentTotalLikes + increment} `;
 }
 
 // Fonctions pour l'affichage des données sur la page
@@ -212,13 +234,6 @@ document
     console.log(`Selected sort option: ${event.target.value}`);
     await displaySortedMedia(photographerId, event.target.value);
   });
-
-function updateTotalLikes(amount) {
-  const totalLikesElement = document.getElementById("total-likes");
-  let currentTotalLikes = parseInt(totalLikesElement.textContent);
-  currentTotalLikes += amount;
-  totalLikesElement.textContent = currentTotalLikes.toLocaleString("fr-FR");
-}
 
 // Fonctions pour la mise à jour des éléments de l'interface utilisateur
 async function updateBandeau(photographerId, photographerData, mediaData) {
