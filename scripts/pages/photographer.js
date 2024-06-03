@@ -62,11 +62,16 @@ function mediaFactory(media, photographerId) {
     heart.innerHTML = "♥";
     heart.classList.add("heart-icon");
 
+    // Bouton pour le cœur
+    const heartButton = document.createElement("button");
+    heartButton.classList.add("heart-button");
+    heartButton.appendChild(heart);
+
     // Conteneur pour les likes et le cœur
     const likesContainer = document.createElement("div");
     likesContainer.classList.add("likes-container");
     likesContainer.appendChild(likes);
-    likesContainer.appendChild(heart);
+    likesContainer.appendChild(heartButton);
 
     // Conteneur pour le titre et le conteneur des likes
     const textContainer = document.createElement("div");
@@ -77,6 +82,17 @@ function mediaFactory(media, photographerId) {
     // Ajouter l'image et le texte au conteneur principal
     mediaContainer.appendChild(imageContainer);
     mediaContainer.appendChild(textContainer);
+
+    // Gestionnaire d'événements pour incrémenter les likes
+    let liked = false;
+    heartButton.addEventListener("click", () => {
+      if (!liked) {
+        media.likes += 1;
+        likes.textContent = `${media.likes} `;
+        updateTotalLikes(1);
+        liked = true;
+      }
+    });
 
     return mediaContainer;
   }
@@ -135,11 +151,16 @@ async function displayMedia(mediaOrPhotographerId) {
     // Remplir mediaArray avec les médias du photographe
     mediaArray = photographerMedia.map((media) => ({
       ...media,
-      url: `assets/photographers/${mediaOrPhotographerId}/${media.image || media.video}`,
+      url: `assets/photographers/${mediaOrPhotographerId}/${
+        media.image || media.video
+      }`,
     }));
 
     photographerMedia.forEach((mediaItem) => {
-      const mediaElem = mediaFactory(mediaItem, mediaOrPhotographerId).getMediaDOM();
+      const mediaElem = mediaFactory(
+        mediaItem,
+        mediaOrPhotographerId
+      ).getMediaDOM();
       gallery.appendChild(mediaElem);
     });
   } catch (error) {
@@ -192,6 +213,13 @@ document
     await displaySortedMedia(photographerId, event.target.value);
   });
 
+function updateTotalLikes(amount) {
+  const totalLikesElement = document.getElementById("total-likes");
+  let currentTotalLikes = parseInt(totalLikesElement.textContent);
+  currentTotalLikes += amount;
+  totalLikesElement.textContent = currentTotalLikes.toLocaleString("fr-FR");
+}
+
 // Fonctions pour la mise à jour des éléments de l'interface utilisateur
 async function updateBandeau(photographerId, photographerData, mediaData) {
   // S'assure que les données nécessaires sont présentes
@@ -223,9 +251,9 @@ let currentMediaIndex = 0;
 let mediaArray = [];
 
 function openLightbox(mediaUrl, isVideo, title) {
-  const lightbox = document.getElementById('lightbox');
-  const lightboxContent = document.getElementById('lightbox-media');
-  const lightboxTitle = document.getElementById('lightbox-title');
+  const lightbox = document.getElementById("lightbox");
+  const lightboxContent = document.getElementById("lightbox-media");
+  const lightboxTitle = document.getElementById("lightbox-title");
 
   lightboxContent.innerHTML = isVideo
     ? `<video src="${mediaUrl}" controls></video>`
@@ -234,9 +262,8 @@ function openLightbox(mediaUrl, isVideo, title) {
   lightboxTitle.textContent = title;
 
   lightbox.hidden = false; // Afficher la lightbox
-  lightbox.style.display = 'flex'; // Utiliser flex pour centrer le contenu
+  lightbox.style.display = "flex"; // Utiliser flex pour centrer le contenu
 }
-
 
 function showNextMedia() {
   if (currentMediaIndex < mediaArray.length - 1) {
@@ -245,7 +272,7 @@ function showNextMedia() {
     currentMediaIndex = 0; // Revenir au début si on est à la fin
   }
   const currentMedia = mediaArray[currentMediaIndex];
-  openLightbox(currentMedia.url, 'video' in currentMedia, currentMedia.title);
+  openLightbox(currentMedia.url, "video" in currentMedia, currentMedia.title);
 }
 
 function showPrevMedia() {
@@ -255,7 +282,7 @@ function showPrevMedia() {
     currentMediaIndex = mediaArray.length - 1; // Aller à la dernière image si on est au début
   }
   const currentMedia = mediaArray[currentMediaIndex];
-  openLightbox(currentMedia.url, 'video' in currentMedia, currentMedia.title);
+  openLightbox(currentMedia.url, "video" in currentMedia, currentMedia.title);
 }
 
 function closeLightbox() {

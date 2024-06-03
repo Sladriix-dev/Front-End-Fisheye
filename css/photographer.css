@@ -99,6 +99,16 @@
     gap: 5px;
 }
 
+.heart-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: #901c1c;
+}
+
+
 .lightbox {
     display: none;
     position: fixed;
